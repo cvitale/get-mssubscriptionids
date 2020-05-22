@@ -14,14 +14,15 @@ else
     Install-Module -AllowClobber -Force MSOnline
 }
 
-Import-Module -Name $moduleName
-
+Write-Host
 Write-Host -ForegroundColor DarkGreen "[+] Connecting to Online services"
-if (Connect-MsolService)
+Connect-MsolService
+
+if ($?)
 {
     Write-Host -ForegroundColor DarkGreen "[+] Connected"
     
-    $filename = "SubscriptionGUID_{0}_{1}.csv" -f $(Get-MsolDomain).Get(0).Name, $(get-date -f yyyy-MM-dd)
+    $filename = "SubscriptionGUID_{0}_{1}.csv" -f $(Get-MsolDomain).Get(0).Name, $(get-date -f yyyyMMdd)
     $exportPath = "{0}\Desktop\{1}" -f $home, $filename
 
     Get-MsolAccountSku | Select-Object -ExpandProperty SubscriptionIds `
@@ -31,6 +32,10 @@ if (Connect-MsolService)
     notepad.exe $exportPath 
 
     Write-Host -ForegroundColor DarkGreen ("[+] File saved in {0}" -f $exportPath)
+}
+else
+{
+    Write-Host -ForegroundColor DarkRed "[+] Connection failed" 
 }
 "Press key to exit.."
 Read-Host

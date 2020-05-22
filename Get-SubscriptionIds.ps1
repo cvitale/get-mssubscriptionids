@@ -11,7 +11,7 @@ else
 {
     Write-Host -ForegroundColor DarkRed "[-] Module is missing!"
     Write-Host -ForegroundColor DarkYellow ("[.] Installing module {0}..." -f  $moduleName )
-    Install-Module -AllowClobber -Force MSOnline
+    Install-Module -AllowClobber -Force - MSOnline
 }
 
 Write-Host
@@ -21,8 +21,11 @@ Connect-MsolService
 if ($?)
 {
     Write-Host -ForegroundColor DarkGreen "[+] Connected"
+
+    $domainName = $(Get-MsolDomain | Where-Object {($_.Name -like '*onmicrosoft.com*') `
+                   -and ($_.Name -notlike '*mail.onmicrosoft.com*') }).Name
     
-    $filename = "SubscriptionGUID_{0}_{1}.csv" -f $(Get-MsolDomain).Get(0).Name, $(get-date -f yyyyMMdd)
+    $filename = "SubscriptionGUID_{0}_{1}.csv" -f $domainName, $(get-date -f yyyyMMdd)
     $exportPath = "{0}\Desktop\{1}" -f $home, $filename
 
     Get-MsolAccountSku | Select-Object -ExpandProperty SubscriptionIds `

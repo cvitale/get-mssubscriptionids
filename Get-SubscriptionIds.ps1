@@ -11,7 +11,7 @@ else
 {
     Write-Host -ForegroundColor DarkRed "[-] Module is missing!"
     Write-Host -ForegroundColor DarkYellow ("[.] Installing module {0}..." -f  $moduleName )
-    Install-Module -AllowClobber -Force - MSOnline
+    Install-Module -AllowClobber -Force $moduleName
 }
 
 Write-Host
